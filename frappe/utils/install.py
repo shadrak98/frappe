@@ -187,59 +187,69 @@ def add_standard_navbar_items():
 			'item_label': 'My Profile',
 			'item_type': 'Route',
 			'route': '/app/user-profile',
-			'is_standard': 1
+			'is_standard': 1,
+			'idx': 1
 		},
 		{
 			'item_label': 'My Settings',
 			'item_type': 'Action',
 			'action': 'frappe.ui.toolbar.route_to_user()',
-			'is_standard': 1
+			'is_standard': 1,
+			'idx': 2
 		},
 		{
 			'item_label': 'Session Defaults',
 			'item_type': 'Action',
 			'action': 'frappe.ui.toolbar.setup_session_defaults()',
-			'is_standard': 1
+			'is_standard': 1,
+			'idx': 3
 		},
 		{
 			'item_label': 'Reload',
 			'item_type': 'Action',
 			'action': 'frappe.ui.toolbar.clear_cache()',
-			'is_standard': 1
+			'is_standard': 1,
+			'idx': 4
 		},
 		{
 			'item_label': 'View Website',
 			'item_type': 'Action',
 			'action': 'frappe.ui.toolbar.view_website()',
-			'is_standard': 1
+			'is_standard': 1,
+			'idx': 5
 		},
 		{
 			'item_label': 'Toggle Full Width',
 			'item_type': 'Action',
 			'action': 'frappe.ui.toolbar.toggle_full_width()',
-			'is_standard': 1
+			'is_standard': 1,
+			'idx': 6
 		},
 		{
 			'item_label': 'Toggle Theme',
 			'item_type': 'Action',
 			'action': 'new frappe.ui.ThemeSwitcher().show()',
-			'is_standard': 1
+			'is_standard': 1,
+			'idx': 7
 		},
 		{
 			'item_label': 'Background Jobs',
 			'item_type': 'Route',
 			'route': '/app/background_jobs',
-			'is_standard': 1
+			'is_standard': 1,
+			'idx': 8
 		},
 		{
 			'item_type': 'Separator',
-			'is_standard': 1
+			'is_standard': 1,
+			'idx': 9
 		},
 		{
 			'item_label': 'Log out',
 			'item_type': 'Action',
 			'action': 'frappe.app.logout()',
-			'is_standard': 1
+			'is_standard': 1,
+			'idx': 10
 		}
 	]
 
@@ -248,31 +258,56 @@ def add_standard_navbar_items():
 			'item_label': 'About',
 			'item_type': 'Action',
 			'action': 'frappe.ui.toolbar.show_about()',
-			'is_standard': 1
+			'is_standard': 1,
+			'idx': 1
 		},
 		{
 			'item_label': 'Keyboard Shortcuts',
 			'item_type': 'Action',
 			'action': 'frappe.ui.toolbar.show_shortcuts(event)',
-			'is_standard': 1
+			'is_standard': 1,
+			'idx': 2
 		},
 		{
 			'item_label': 'Frappe Support',
 			'item_type': 'Route',
 			'route': 'https://frappe.io/support',
-			'is_standard': 1
+			'is_standard': 1,
+			'idx': 3
 		}
 	]
 
-	custom_help_dropdown_items = add_custom_navbar_items(navbar_settings.help_dropdown)
-	custom_settings_dropdown_items = add_custom_navbar_items(navbar_settings.settings_dropdown)
+	counter = 0
+	for d in navbar_settings.settings_dropdown:
+		d.idx += counter
+		if not d.is_standard:
+			row = {
+				'item_label': d.item_label,
+				'item_type': d.item_type,
+				'route': d.route,
+				'action': d.action,
+				'is_standard': 0,
+				'idx': d.idx
+			}
+			standard_navbar_items.insert(d.idx - 1, row)
+			counter += 1
 
-	# joining custom_items and standard_items list by keeping custom items on top
-	standard_navbar_items = custom_settings_dropdown_items + standard_navbar_items
-	standard_help_items = custom_help_dropdown_items + standard_help_items
+	for d in navbar_settings.help_dropdown:
+		d.idx += counter
+		if not d.is_standard:
+			row = {
+				'item_label': d.item_label,
+				'item_type': d.item_type,
+				'route': d.route,
+				'action': d.action,
+				'is_standard': 0,
+				'idx': d.idx
+			}
+			standard_help_items.insert(d.idx - 1, row)
+			counter += 1
 
-	navbar_settings.settings_dropdown = []
-	navbar_settings.help_dropdown = []
+	# navbar_settings.settings_dropdown = []
+	# navbar_settings.help_dropdown = []
 
 	for item in standard_navbar_items:
 		navbar_settings.append('settings_dropdown', item)
@@ -282,17 +317,17 @@ def add_standard_navbar_items():
 
 	navbar_settings.save()
 
-def add_custom_navbar_items(navbar_items):
-	non_standard_items = []
-	for item in navbar_items:
-		if not item.is_standard and not item.item_type == 'Separator':
-			row = {
-				'item_label': item.item_label,
-				'item_type': item.item_type,
-				'route': item.route,
-				'action': item.action,
-				'is_standard': 0
-			}
-			non_standard_items.append(row)
+# def add_custom_navbar_items(navbar_items):
+# 	non_standard_items = []
+# 	for item in navbar_items:
+# 		if not item.is_standard and not item.item_type == 'Separator':
+# 			row = {
+# 				'item_label': item.item_label,
+# 				'item_type': item.item_type,
+# 				'route': item.route,
+# 				'action': item.action,
+# 				'is_standard': 0
+# 			}
+# 			non_standard_items.append(row)
 
-	return non_standard_items
+# 	return non_standard_items
