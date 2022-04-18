@@ -311,46 +311,14 @@ def add_standard_navbar_items():
 			"item_type": "Action",
 			"action": "frappe.ui.toolbar.show_shortcuts(event)",
 			"is_standard": 1,
-		},
-		{
-			"item_label": "Frappe Support",
-			"item_type": "Route",
-			"route": "https://frappe.io/support",
-			"is_standard": 1,
-		},
+		}
 	]
 
-	counter = 0
-	for d in navbar_settings.settings_dropdown:
-		d.idx += counter
-		if not d.is_standard:
-			row = {
-				'item_label': d.item_label,
-				'item_type': d.item_type,
-				'route': d.route,
-				'action': d.action,
-				'is_standard': 0,
-				'idx': d.idx
-			}
-			standard_navbar_items.insert(d.idx - 1, row)
-			counter += 1
+	standard_navbar_items = get_custom_navbar_items(navbar_settings.settings_dropdown, standard_navbar_items)
+	standard_help_items = get_custom_navbar_items(navbar_settings.help_dropdown, standard_help_items)
 
-	for d in navbar_settings.help_dropdown:
-		d.idx += counter
-		if not d.is_standard:
-			row = {
-				'item_label': d.item_label,
-				'item_type': d.item_type,
-				'route': d.route,
-				'action': d.action,
-				'is_standard': 0,
-				'idx': d.idx
-			}
-			standard_help_items.insert(d.idx - 1, row)
-			counter += 1
-
-	# navbar_settings.settings_dropdown = []
-	# navbar_settings.help_dropdown = []
+	navbar_settings.settings_dropdown = []
+	navbar_settings.help_dropdown = []
 
 	for item in standard_navbar_items:
 		navbar_settings.append("settings_dropdown", item)
@@ -360,17 +328,22 @@ def add_standard_navbar_items():
 
 	navbar_settings.save()
 
-# def add_custom_navbar_items(navbar_items):
-# 	non_standard_items = []
-# 	for item in navbar_items:
-# 		if not item.is_standard and not item.item_type == 'Separator':
-# 			row = {
-# 				'item_label': item.item_label,
-# 				'item_type': item.item_type,
-# 				'route': item.route,
-# 				'action': item.action,
-# 				'is_standard': 0
-# 			}
-# 			non_standard_items.append(row)
+def get_custom_navbar_items(navbar_items, standard_items):
+	#hack to maintain the order of custom and standard items
+	counter = 0
+	for d in navbar_items:
+		if not d.is_standard:
+			row = {
+				"item_label": d.item_label,
+				"item_type": d.item_type,
+				"route": d.route,
+				"action": d.action,
+				"is_standard": 0,
+				"idx": d.idx
+			}
+			standard_items.insert(d.idx - 1, row)
+			counter += 1
+		else:
+			d.idx += counter
 
-# 	return non_standard_items
+	return standard_items
