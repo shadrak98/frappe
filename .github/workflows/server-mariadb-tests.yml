@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: Clone
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.1.0
 
       - name: Check if build should be run
         id: check-build
@@ -58,7 +58,7 @@ jobs:
 
     steps:
       - name: Clone
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.1.0
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -133,7 +133,7 @@ jobs:
     if: ${{ needs.checkrun.outputs.build == 'strawberry' }}
     steps:
       - name: Clone
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.1.0
 
       - name: Download artifacts
         uses: actions/download-artifact@v3

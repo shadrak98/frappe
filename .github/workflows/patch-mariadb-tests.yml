@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Clone
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.1.0
 
       - name: Check if build should be run
         id: check-build
@@ -50,7 +50,7 @@ jobs:
 
     steps:
       - name: Clone
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.1.0
 
       - name: Check for Merge Conflicts
         run: |
